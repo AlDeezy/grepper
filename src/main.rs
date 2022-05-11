@@ -1,7 +1,7 @@
 use std::env;
-use std::error::Error;
-use std::fs;
 use std::process;
+
+use grepper::Config;
 
 fn main() {
     // Warning: this will panic if we aren't using valid Unicode characters!
@@ -15,41 +15,11 @@ fn main() {
         process::exit(1);
     });
 
-    println!("Searching for {}", config.query);
-    println!("In {}", config.filename);
-
     // Because we only care whether run returns an error, we don't need
     //   to unwrap it, thus we use this 'if let' pattern
     // run only returns the unit "()" type on success
-    if let Err(e) = run(config) {
+    if let Err(e) = grepper::run(config) {
         println!("Application error: {}", e);
         process::exit(1);
     }
-}
-
-struct Config {
-    query: String,
-    filename: String,
-}
-
-impl Config {
-    // Takes in a pointer to a String array (ie, the arguments passed within the cli)
-    // Returns a new Config instance upon success, or an Err(&str)
-    fn new(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("Not enough arguments!");
-        }
-        let query = args[1].clone();
-        let filename = args[2].clone();
-    
-        Ok(Config {query, filename})
-    }
-}
-
-fn run(config: Config) -> Result<(), Box<dyn Error>> {
-    let contents = fs::read_to_string(config.filename)?;
-
-    println!("With text:\n{}", contents);
-
-    Ok(())
 }
