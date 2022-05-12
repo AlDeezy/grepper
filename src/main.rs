@@ -11,7 +11,7 @@ fn main() {
     // This is because we want to assign config a Config instance,
     //   or we want to handle any error that occurs in this process
     let config = Config::new(&args).unwrap_or_else(|err|{
-        println!("Problem parsing args: {}", err);
+        eprintln!("Problem parsing args: {}", err);
         process::exit(1);
     });
 
